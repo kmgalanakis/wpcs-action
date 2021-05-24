@@ -1,63 +1,39 @@
-# PHP CodeSniffer GitHub Action
+# WPCS GitHub Action
 
-This action will help you to run phpcs (PHP_CodeSniffer) with [GitHub Actions](https://github.com/features/actions) platform. It also supports [annotations](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-status-checks#checks) out of the box — you don't need to use any tokens to make it work. 
+This action will help you to run phpcs (PHP_CodeSniffer) against [WordPress Coding Standards](https://github.com/WordPress/WordPress-Coding-Standards) with [GitHub Actions](https://github.com/features/actions) platform.
 
-<img src="https://leonardo.osnova.io/491e4ce9-72d9-9417-29f7-9934ce7ec8ad/" alt="How Annotations Works" title="How Annotations Works" width="560" height="432" />
+To make it as simple as posibile, this action supports WordPress Coding Standards exclusively and only checks for PHP files. This action doesn't require any change or addition to your source code. It means that you don't need to add composer/phpcs to your plugin or create PHP CodeSniffer config to use this action.
+
+This is a fork of [chekalsky/phpcs-action](https://github.com/chekalsky/phpcs-action), so this action supports GitHub Action Antonation too. All credit goes to 
+[Ilya Chekalsky](https://github.com/chekalsky).
 
 ## Usage
 
-Add the following code to `.github/workflows/phpcs.yml` file.
+Add the following code to `.github/workflows/wpcs.yml` file.
 
 ```yaml
-name: PHPCS check
+name: WPCS check
 
 on: pull_request
 
 jobs:
   phpcs:
-      name: PHPCS
+      name: WPCS
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v2
-        - name: PHPCS check
-          uses: chekalsky/phpcs-action@v1
+        - name: WPCS check
+          uses: dinhtungdu/wpcs-action@master
 ```
 
-Eventually you could also check for warnings.
+Available options:
 
 ```yaml
         ...
-        - name: PHPCS check
-          uses: chekalsky/phpcs-action@v1
+        - name: WPCS check
+          uses: dinhtungdu/wpcs-action@master
           with:
-            enable_warnings: true
-```
-
-You probably would like to have [configuration file](https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#using-a-default-configuration-file) for PHP_CodeSniffer in order to make it work as you like.
-
-#### `installed_paths` and `Dealerdirect/phpcodesniffer-composer-installer`
-If you are using custom standards, you have two options on how to customize this action.
-
-1. Just use [special library](https://github.com/Dealerdirect/phpcodesniffer-composer-installer) which will find and activate all the standards you have in your `composer.json`.
-
-It will also change phpcs `installed_paths` setting, but will prefer local phpcs install. That means we should use local phpcs binary in the action. To do so run action with certain parameter.
-
-```yaml
-        ...
-        - name: Install dependencies
-          run: composer install --dev --prefer-dist --no-progress --no-suggest
-        - name: PHPCS check
-          uses: chekalsky/phpcs-action@v1
-          with:
-            phpcs_bin_path: './vendor/bin/phpcs'
-```
-
-2. Change the `installed_paths` directly by using another option.
-
-```yaml
-        ...
-        - name: PHPCS check
-          uses: chekalsky/phpcs-action@v1
-          with:
-            installed_paths: '${{ github.workspace }}/vendor/phpcompatibility/php-compatibility'
+            enable_warnings: true # Enable checking for warnings (-w)
+            standard: 'WordPress' # Standard to use, default to WordPress
+            paths: '.' # Paths to check, space separated, default to project root directory
 ```
