@@ -4,18 +4,18 @@ cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 
 echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
 
-if [ -n "${INPUT_INSTALLED_PATHS}" ]; then
-    ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${INPUT_INSTALLED_PATHS}"
-fi
+ git clone -b master https://github.com/WordPress/WordPress-Coding-Standards.git ~/wpcs
+
+phpcs --config-set installed_paths ~/wpcs
 
 if [ -z "${INPUT_ENABLE_WARNINGS}" ] || [ "${INPUT_ENABLE_WARNINGS}" = "false" ]; then
     echo "Check for warnings disabled"
 
-    ${INPUT_PHPCS_BIN_PATH} -n --report=checkstyle
+    phpcs -n --report=checkstyle --standard=${INPUT_STANDARD} --extensions=php ${INPUT_PATHS}
 else
     echo "Check for warnings enabled"
 
-    ${INPUT_PHPCS_BIN_PATH} --report=checkstyle
+    phpcs --report=checkstyle --standard=${INPUT_STANDARD} --extensions=php ${INPUT_PATHS}
 fi
 
 status=$?
