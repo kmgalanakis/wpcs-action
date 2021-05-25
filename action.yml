@@ -10,6 +10,10 @@ inputs:
     description: 'Standard to use (default to WordPress)'
     required: false
     default: 'WordPress'
+  standard_repo:
+    description: 'Public (git) repository URL of the coding standard'
+    required: false
+    default: 'https://github.com/WordPress/WordPress-Coding-Standards.git'
   paths:
     description: 'Path(s) to check (space separated)'
     required: false

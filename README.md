@@ -23,17 +23,40 @@ jobs:
       steps:
         - uses: actions/checkout@v2
         - name: WPCS check
-          uses: dinhtungdu/wpcs-action@master
+          uses: 10up/wpcs-action@master
 ```
 
-Available options:
+Available options (with default value):
 
 ```yaml
         ...
         - name: WPCS check
-          uses: dinhtungdu/wpcs-action@master
+          uses: 10up/wpcs-action@master
           with:
             enable_warnings: true # Enable checking for warnings (-w)
-            standard: 'WordPress' # Standard to use, default to WordPress
-            paths: '.' # Paths to check, space separated, default to project root directory
+            standard: 'WordPress' # Standard to use
+            standard_repo: 'https://github.com/WordPress/WordPress-Coding-Standards.git' # Public (git) repository URL of the coding standard
+            paths: '.' # Paths to check, space separated
+```
+
+## Examples
+
+### VIP Coding Standards
+
+```yaml
+name: WPCS check
+
+on: pull_request
+
+jobs:
+  phpcs:
+      name: WPCS
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - name: VIPCS check
+          uses: 10up/wpcs-action@master
+          with:
+            standard: 'WordPress-VIP-Go'
+            standard_repo: 'https://github.com/Automattic/VIP-Coding-Standards'
 ```

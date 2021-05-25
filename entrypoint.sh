@@ -4,8 +4,11 @@ cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 
 echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
 
-echo "Cloning WPCS into ~/wpcs"
-git clone -b master https://github.com/WordPress/WordPress-Coding-Standards.git ~/wpcs
+git clone "${INPUT_STANDARD_REPO}" ~/wpcs
+
+echo "> ls -l ~/wpcs"
+
+ls -l ~/wpcs
 
 phpcs --config-set installed_paths ~/wpcs
 
