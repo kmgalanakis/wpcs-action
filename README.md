@@ -36,6 +36,7 @@ Available options (with default value):
             enable_warnings: true # Enable checking for warnings (-w)
             standard: 'WordPress' # Standard to use
             standard_repo: 'https://github.com/WordPress/WordPress-Coding-Standards.git' # Public (git) repository URL of the coding standard
+            repo_branch: 'master' # Branch of Standard repository
             paths: '.' # Paths to check, space separated
 ```
 

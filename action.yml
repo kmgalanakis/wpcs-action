@@ -14,6 +14,10 @@ inputs:
     description: 'Public (git) repository URL of the coding standard'
     required: false
     default: 'https://github.com/WordPress/WordPress-Coding-Standards.git'
+  repo_branch:
+    description: 'Repository branch'
+    required: false
+    default: 'master'
   paths:
     description: 'Path(s) to check (space separated)'
     required: false

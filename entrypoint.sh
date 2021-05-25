@@ -4,11 +4,7 @@ cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 
 echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
 
-git clone "${INPUT_STANDARD_REPO}" ~/wpcs
-
-echo "> ls -l ~/wpcs"
-
-ls -l ~/wpcs
+git clone -b ${INPUT_REPO_BRANCH} ${INPUT_STANDARD_REPO} ~/wpcs
 
 phpcs --config-set installed_paths ~/wpcs
 
