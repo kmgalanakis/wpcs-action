@@ -12,6 +12,8 @@ ls -l ~/wpcs
 
 phpcs --config-set installed_paths ~/wpcs
 
+phpcs -i
+
 if [ -z "${INPUT_ENABLE_WARNINGS}" ] || [ "${INPUT_ENABLE_WARNINGS}" = "false" ]; then
     echo "Check for warnings disabled"
 
