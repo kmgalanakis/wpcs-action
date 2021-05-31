@@ -6,22 +6,26 @@ inputs:
     description: 'Enable checking for warnings (-w)'
     required: false
     default: ''
-  standard:
-    description: 'Standard to use (default to WordPress)'
-    required: false
-    default: 'WordPress'
-  standard_repo:
-    description: 'Public (git) repository URL of the coding standard'
-    required: false
-    default: 'https://github.com/WordPress/WordPress-Coding-Standards.git'
-  repo_branch:
-    description: 'Repository branch'
-    required: false
-    default: 'master'
   paths:
     description: 'Path(s) to check (space separated)'
     required: false
     default: '.'
+  standard:
+    description: 'Standard to use (default to WordPress)'
+    required: false
+    default: 'WordPress'
+  is_vipcs:
+    description: 'Check against VIPCS. This override custom standard repo settings.'
+    required: false
+    default: 'false'
+  standard_repo:
+    description: 'Public (git) repository URL of the coding standard'
+    required: false
+    default: ''
+  repo_branch:
+    description: 'Repository branch'
+    required: false
+    default: 'master'
 runs:
   using: 'docker'
   image: 'Dockerfile'
