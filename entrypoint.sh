@@ -6,7 +6,12 @@ echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
 
 git clone -b master https://github.com/WordPress/WordPress-Coding-Standards.git ~/wpcs
 
-if [ -z "${INPUT_STANDARD_REPO}" ] || [ "${INPUT_STANDARD_REPO}" = "false" ]; then
+if [ "${INPUT_IS_VIPCS}" = "true" ]; then
+    echo "Setting up VIPCS"
+    git clone https://github.com/Automattic/VIP-Coding-Standards ${HOME}/vipcs
+    git clone https://github.com/sirbrillig/phpcs-variable-analysis ${HOME}/variable-analysis
+    phpcs --config-set installed_paths "${HOME}/wpcs,${HOME}/vipcs,${HOME}/variable-analysis"
+elif [ -z "${INPUT_STANDARD_REPO}" ] || [ "${INPUT_STANDARD_REPO}" = "false" ]; then
     phpcs --config-set installed_paths ~/wpcs
 else
     echo "Standard repository: ${INPUT_STANDARD_REPO}"

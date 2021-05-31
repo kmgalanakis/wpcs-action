@@ -6,6 +6,14 @@ inputs:
     description: 'Enable checking for warnings (-w)'
     required: false
     default: ''
+  paths:
+    description: 'Path(s) to check (space separated)'
+    required: false
+    default: '.'
+  is_vipcs:
+    description: 'Check against VIPCS. This override custom standard settings.'
+    required: false
+    default: 'false'
   standard:
     description: 'Standard to use (default to WordPress)'
     required: false
@@ -18,10 +26,6 @@ inputs:
     description: 'Repository branch'
     required: false
     default: 'master'
-  paths:
-    description: 'Path(s) to check (space separated)'
-    required: false
-    default: '.'
 runs:
   using: 'docker'
   image: 'Dockerfile'
