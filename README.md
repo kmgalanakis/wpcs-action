@@ -51,7 +51,7 @@ on: pull_request
 
 jobs:
   phpcs:
-      name: WPCS
+      name: VIPCS
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v2

@@ -4,9 +4,14 @@ cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 
 echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
 
-git clone -b ${INPUT_REPO_BRANCH} ${INPUT_STANDARD_REPO} ~/wpcs
-
-phpcs --config-set installed_paths ~/wpcs
+if [[ "${INPUT_STANDARD_REPO}" == *"Automattic/VIP-Coding-Standards"* ]]; then
+    git clone -b master https://github.com/WordPress/WordPress-Coding-Standards.git ~/wpcs
+    git clone -b ${INPUT_REPO_BRANCH} ${INPUT_STANDARD_REPO} ~/vipcs
+    phpcs --config-set installed_paths ~/wpcs,~/vipcs
+else
+    git clone -b ${INPUT_REPO_BRANCH} ${INPUT_STANDARD_REPO} ~/wpcs
+    phpcs --config-set installed_paths ~/wpcs
+fi
 
 phpcs -i
 
