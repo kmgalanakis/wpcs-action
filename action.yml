@@ -10,14 +10,14 @@ inputs:
     description: 'Path(s) to check (space separated)'
     required: false
     default: '.'
-  is_vipcs:
-    description: 'Check against VIPCS. This override custom standard settings.'
-    required: false
-    default: 'false'
   standard:
     description: 'Standard to use (default to WordPress)'
     required: false
     default: 'WordPress'
+  is_vipcs:
+    description: 'Check against VIPCS. This override custom standard repo settings.'
+    required: false
+    default: 'false'
   standard_repo:
     description: 'Public (git) repository URL of the coding standard'
     required: false

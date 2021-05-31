@@ -34,10 +34,11 @@ Available options (with default value):
           uses: 10up/wpcs-action@master
           with:
             enable_warnings: true # Enable checking for warnings (-w)
+            paths: '.' # Paths to check, space separated
             standard: 'WordPress' # Standard to use
+            is_vipcs: 'false' # Check against VIPCS. This override custom standard repo settings.
             standard_repo: 'https://github.com/WordPress/WordPress-Coding-Standards.git' # Public (git) repository URL of the coding standard
             repo_branch: 'master' # Branch of Standard repository
-            paths: '.' # Paths to check, space separated
 ```
 
 ## Examples
@@ -59,5 +60,5 @@ jobs:
           uses: 10up/wpcs-action@master
           with:
             standard: 'WordPress-VIP-Go'
-            standard_repo: 'https://github.com/Automattic/VIP-Coding-Standards'
+            is_vipcs: 'true'
 ```
