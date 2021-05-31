@@ -10,8 +10,8 @@ if [ -z "${INPUT_STANDARD_REPO}" ] || [ "${INPUT_STANDARD_REPO}" = "false" ]; th
     phpcs --config-set installed_paths ~/wpcs
 else
     echo "Standard repository: ${INPUT_STANDARD_REPO}"
-    git clone -b ${INPUT_REPO_BRANCH} ${INPUT_STANDARD_REPO} ~/cs
-    phpcs --config-set installed_paths ~/wpcs,~/cs
+    git clone -b ${INPUT_REPO_BRANCH} ${INPUT_STANDARD_REPO} ${HOME}/cs
+    phpcs --config-set installed_paths "${HOME}/wpcs,${HOME}/cs"
 fi
 
 phpcs -i
