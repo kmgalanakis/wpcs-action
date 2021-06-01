@@ -37,7 +37,7 @@ Available options (with default value):
             paths: '.' # Paths to check, space separated
             standard: 'WordPress' # Standard to use
             is_vipcs: 'false' # Check against VIPCS. This override custom standard repo settings.
-            standard_repo: 'https://github.com/WordPress/WordPress-Coding-Standards.git' # Public (git) repository URL of the coding standard
+            standard_repo: '' # Public (git) repository URL of the coding standard
             repo_branch: 'master' # Branch of Standard repository
 ```
 
