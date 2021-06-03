@@ -33,7 +33,7 @@ Available options (with default value):
         - name: WPCS check
           uses: 10up/wpcs-action@master
           with:
-            enable_warnings: true # Enable checking for warnings (-w)
+            enable_warnings: false # Enable checking for warnings (-w)
             paths: '.' # Paths to check, space separated
             standard: 'WordPress' # Standard to use
             is_vipcs: 'false' # Check against VIPCS. This override custom standard repo settings.
