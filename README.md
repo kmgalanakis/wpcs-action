@@ -35,6 +35,7 @@ Available options (with default value):
           with:
             enable_warnings: false # Enable checking for warnings (-w)
             paths: '.' # Paths to check, space separated
+            excludes: '' # Paths to excludes, space separated
             standard: 'WordPress' # Standard to use
             is_vipcs: 'false' # Check against VIPCS. This override custom standard repo settings.
             standard_repo: '' # Public (git) repository URL of the coding standard
