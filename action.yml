@@ -10,6 +10,10 @@ inputs:
     description: 'Path(s) to check (space separated)'
     required: false
     default: '.'
+  excludes:
+    description: 'Path(s) to excludes (space separated)'
+    required: false
+    default: ''
   standard:
     description: 'Standard to use (default to WordPress)'
     required: false

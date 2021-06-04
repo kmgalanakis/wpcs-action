@@ -19,16 +19,22 @@ else
     phpcs --config-set installed_paths "${HOME}/wpcs,${HOME}/cs"
 fi
 
+if [ -z "${INPUT_STANDARD_REPO}" ] || [ "${INPUT_STANDARD_REPO}" = "false" ]; then
+    EXCLUDES = "node_modules,vendor"
+else
+    EXCLUDES = "node_modules,vendor,${INPUT_EXCLUDES}"
+fi
+
 phpcs -i
 
 if [ -z "${INPUT_ENABLE_WARNINGS}" ] || [ "${INPUT_ENABLE_WARNINGS}" = "false" ]; then
     echo "Check for warnings disabled"
 
-    phpcs -n --report=checkstyle --standard=${INPUT_STANDARD} --extensions=php --ignore=node_modules,vendor ${INPUT_PATHS}
+    phpcs -n --report=checkstyle --standard=${INPUT_STANDARD} --extensions=php --ignore=${EXCLUDES} ${INPUT_PATHS}
 else
     echo "Check for warnings enabled"
 
-    phpcs --report=checkstyle --standard=${INPUT_STANDARD} --ignore=node_modules,vendor --extensions=php ${INPUT_PATHS}
+    phpcs --report=checkstyle --standard=${INPUT_STANDARD} --ignore=${EXCLUDES} --extensions=php ${INPUT_PATHS}
 fi
 
 status=$?
