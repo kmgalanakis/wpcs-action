@@ -19,10 +19,10 @@ else
     phpcs --config-set installed_paths "${HOME}/wpcs,${HOME}/cs"
 fi
 
-if [ -z "${INPUT_STANDARD_REPO}" ] || [ "${INPUT_STANDARD_REPO}" = "false" ]; then
-    EXCLUDES = "node_modules,vendor"
+if [ -z "${INPUT_EXCLUDES}" ]; then
+    EXCLUDES="node_modules,vendor"
 else
-    EXCLUDES = "node_modules,vendor,${INPUT_EXCLUDES}"
+    EXCLUDES="node_modules,vendor,${INPUT_EXCLUDES}"
 fi
 
 phpcs -i
