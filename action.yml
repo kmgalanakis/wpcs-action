@@ -30,6 +30,10 @@ inputs:
     description: 'Repository branch'
     required: false
     default: 'master'
+  phpcs_bin_path:
+    description: 'PHPCS bin path'
+    required: false
+    default: 'phpcs'
 runs:
   using: 'docker'
   image: 'Dockerfile'
