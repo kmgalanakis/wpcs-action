@@ -43,7 +43,7 @@ else
 fi
 
 if [ "${HAS_CONFIG}" = true ] ; then
-    ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG}
+    ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle
 else
     ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle --standard=${INPUT_STANDARD} --ignore=${EXCLUDES} --extensions=php ${INPUT_PATHS}
 fi
