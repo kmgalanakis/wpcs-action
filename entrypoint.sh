@@ -2,8 +2,6 @@
 
 cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 
-echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
-
 git clone -b master https://github.com/WordPress/WordPress-Coding-Standards.git ~/wpcs
 
 if [ "${INPUT_IS_VIPCS}" = "true" ]; then
@@ -26,6 +24,8 @@ else
 fi
 
 phpcs -i
+
+echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
 
 if [ -z "${INPUT_ENABLE_WARNINGS}" ] || [ "${INPUT_ENABLE_WARNINGS}" = "false" ]; then
     echo "Check for warnings disabled"
