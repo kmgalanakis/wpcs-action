@@ -7,6 +7,12 @@ To make it as simple as possible, this action supports WordPress Coding Standard
 This is a fork of [chekalsky/phpcs-action](https://github.com/chekalsky/phpcs-action), so this action supports GitHub Action annotations too. All credit goes to 
 [Ilya Chekalsky](https://github.com/chekalsky).
 
+## Known Caveats/Issues
+
+### Annotations limit
+
+GitHub allows only 10 warning annotations and 10 error annotations per step. So any warning/error exceeds this threshold won't show on the GitHub Pull Request page.
+
 ## Usage
 
 Add the following code to `.github/workflows/wpcs.yml` file.
