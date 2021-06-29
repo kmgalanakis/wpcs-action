@@ -28,13 +28,24 @@ phpcs -i
 echo "::add-matcher::${RUNNER_TEMP}/_github_workflow/problem-matcher.json"
 
 if [ -z "${INPUT_ENABLE_WARNINGS}" ] || [ "${INPUT_ENABLE_WARNINGS}" = "false" ]; then
+    WARNING_FLAG="-n"
     echo "Check for warnings disabled"
-
-    ${INPUT_PHPCS_BIN_PATH} -n --report=checkstyle --standard=${INPUT_STANDARD} --extensions=php --ignore=${EXCLUDES} ${INPUT_PATHS}
 else
+    WARNING_FLAG=""
     echo "Check for warnings enabled"
+fi
 
-    ${INPUT_PHPCS_BIN_PATH} --report=checkstyle --standard=${INPUT_STANDARD} --ignore=${EXCLUDES} --extensions=php ${INPUT_PATHS}
+# .phpcs.xml, phpcs.xml, .phpcs.xml.dist, phpcs.xml.dist
+if [ -f ".phpcs.xml" ] || [ -f "phpcs.xml" ] || [ -f ".phpcs.xml.dist" ] || [ -f "phpcs.xml.dist" ]; then
+    HAS_CONFIG=true
+else 
+    HAS_CONFIG=false
+fi
+
+if [ "${HAS_CONFIG}" = true ] ; then
+    ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG}
+else
+    ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle --standard=${INPUT_STANDARD} --ignore=${EXCLUDES} --extensions=php ${INPUT_PATHS}
 fi
 
 status=$?
