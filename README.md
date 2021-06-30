@@ -7,6 +7,7 @@ To make it as simple as possible, this action supports WordPress Coding Standard
 This is a fork of [chekalsky/phpcs-action](https://github.com/chekalsky/phpcs-action), so this action supports GitHub Action annotations too. All credit goes to 
 [Ilya Chekalsky](https://github.com/chekalsky).
 
+From v1.3.1, this action will 
 ## Known Caveats/Issues
 
 ### Annotations limit
@@ -43,9 +44,10 @@ Available options (with default value):
             paths: '.' # Paths to check, space separated
             excludes: '' # Paths to excludes, space separated
             standard: 'WordPress' # Standard to use
-            is_vipcs: 'false' # Check against VIPCS. This override custom standard repo settings.
             standard_repo: '' # Public (git) repository URL of the coding standard
             repo_branch: 'master' # Branch of Standard repository
+            phpcs_bin_path: 'phpcs' # Custom PHPCS bin path
+            use_local_config: 'false' # Use local config if available
 ```
 
 ## Examples
@@ -67,5 +69,4 @@ jobs:
           uses: 10up/wpcs-action@master
           with:
             standard: 'WordPress-VIP-Go'
-            is_vipcs: 'true'
 ```
