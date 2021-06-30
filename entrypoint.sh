@@ -42,7 +42,7 @@ else
     HAS_CONFIG=false
 fi
 
-if [ "${HAS_CONFIG}" = true and "${USE_LOCAL_CONFIG}" = "true" ] ; then
+if [ "${HAS_CONFIG}" = true ] && [ "${INPUT_USE_LOCAL_CONFIG}" = "true" ] ; then
     ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle
 else
     ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle --standard=${INPUT_STANDARD} --ignore=${EXCLUDES} --extensions=php ${INPUT_PATHS}
