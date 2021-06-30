@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `phpcs_bin_path` option to use local PHPCS.
 
 ### Removed
-- `is_vipcs` option. From this version, `wpcs-action` checks agains VIPCS automatically if the `standard` option set to `WordPress-VIP-Go` or `WordPressVIPMinimum`.
+- `is_vipcs` option. From this version, `wpcs-action` checks against VIPCS automatically if the `standard` option set to `WordPress-VIP-Go` or `WordPressVIPMinimum`.
 
 ## [1.3.0] - 2021-06-29
 ### Added
