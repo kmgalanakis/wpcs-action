@@ -1,5 +1,9 @@
 # WPCS GitHub Action
 
+>  GitHub Action to help you lint your PHP without additional dependencies within your codebase 
+
+[![Support Level](https://img.shields.io/badge/support-active-green.svg)](#support-level) [![Release Version](https://img.shields.io/github/release/10up/wpcs-action.svg)](https://github.com/10up/wpcs-action/releases/latest) [![MIT License](https://img.shields.io/github/license/10up/wpcs-action.svg)](https://github.com/10up/wpcs-action/blob/develop/LICENSE)
+
 This action will help you to run phpcs (PHP_CodeSniffer) against [WordPress Coding Standards](https://github.com/WordPress/WordPress-Coding-Standards) with [GitHub Actions](https://github.com/features/actions) platform.
 
 To make it as simple as possible, this action supports WordPress Coding Standards exclusively and only checks for PHP files. This action doesn't require any change or addition to your source code. It means that you don't need to add composer/phpcs to your plugin or create PHP CodeSniffer config to use this action.
@@ -70,3 +74,13 @@ jobs:
           with:
             standard: 'WordPress-VIP-Go'
 ```
+
+## Support Level
+
+**Active:** 10up is actively working on this, and we expect to continue work for the foreseeable future including keeping tested up to the most recent version of WordPress.  Bug reports, feature requests, questions, and pull requests are welcome.
+
+## Like what you see?
+
+<p align="center">
+<a href="http://10up.com/contact/"><img src="https://10up.com/uploads/2016/10/10up-Github-Banner.png" width="850"></a>
+</p>
