@@ -11,7 +11,8 @@ To make it as simple as possible, this action supports WordPress Coding Standard
 This is a fork of [chekalsky/phpcs-action](https://github.com/chekalsky/phpcs-action), so this action supports GitHub Action annotations too. All credit goes to 
 [Ilya Chekalsky](https://github.com/chekalsky).
 
-From v1.3.1, this action will 
+From v1.3.1, this action can detect the PHPCS custom config and use that config to check the source code. When using the local config, `paths`, `excludes`, and `standard` are ignored.
+
 ## Known Caveats/Issues
 
 ### Annotations limit
