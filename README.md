@@ -13,6 +13,8 @@ This is a fork of [chekalsky/phpcs-action](https://github.com/chekalsky/phpcs-ac
 
 From v1.3.1, this action can detect the PHPCS custom config and use that config to check the source code. When using the local config, `paths`, `excludes`, and `standard` are ignored.
 
+### ☞ Check out our [collection of WordPress-focused GitHub Actions](https://github.com/10up/actions-wordpress)
+
 ## Known Caveats/Issues
 
 ### Annotations limit
