@@ -37,7 +37,7 @@ jobs:
       steps:
         - uses: actions/checkout@v2
         - name: WPCS check
-          uses: 10up/wpcs-action@master
+          uses: 10up/wpcs-action@stable
 ```
 
 Available options (with default value):
@@ -45,7 +45,7 @@ Available options (with default value):
 ```yaml
         ...
         - name: WPCS check
-          uses: 10up/wpcs-action@master
+          uses: 10up/wpcs-action@stable
           with:
             enable_warnings: false # Enable checking for warnings (-w)
             paths: '.' # Paths to check, space separated
@@ -73,7 +73,7 @@ jobs:
       steps:
         - uses: actions/checkout@v2
         - name: VIPCS check
-          uses: 10up/wpcs-action@master
+          uses: 10up/wpcs-action@stable
           with:
             standard: 'WordPress-VIP-Go'
 ```
