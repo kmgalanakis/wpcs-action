@@ -5,6 +5,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.3] - 2022-03-17
+### Fixed
+- Fix wrong branch used in examples.
+
+
+## [1.3.2] - 2021-07-13
+### Fixed
+- Fix the VIPCS detection issue.
+
 ## [1.3.1] - 2021-06-29
 ### Added
 - Detect local phpcs config. This is disabled by default. Enable it by setting `use_local_config` to 'true'.
