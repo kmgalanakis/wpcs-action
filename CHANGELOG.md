@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.3] - 2022-03-17
 ### Fixed
 - Fix wrong branch used in examples.
+- Docs: Update supported standards.
 
 
 ## [1.3.2] - 2021-07-13
