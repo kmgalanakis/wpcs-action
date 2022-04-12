@@ -5,7 +5,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.3.3] - 2022-03-17
+## [1.3.3] - 2022-04-12
 ### Fixed
 - Fix wrong branch used in examples.
 - Docs: Update supported standards.
