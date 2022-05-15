@@ -43,9 +43,9 @@ else
 fi
 
 if [ "${HAS_CONFIG}" = true ] && [ "${INPUT_USE_LOCAL_CONFIG}" = "true" ] ; then
-    ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle
+    ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle --report-json=./phpcs.json
 else
-    ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle --standard=${INPUT_STANDARD} --ignore=${EXCLUDES} --extensions=php ${INPUT_PATHS}
+    ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle --report-json=./phpcs.json --standard=${INPUT_STANDARD} --ignore=${EXCLUDES} --extensions=php ${INPUT_PATHS}
 fi
 
 status=$?
