@@ -8,6 +8,7 @@ RUN chmod +x /action/entrypoint.sh
 
 RUN apk update && \
     apk upgrade && \
+    apk add node && \
     apk add git
 
 ENTRYPOINT ["/action/entrypoint.sh"]
