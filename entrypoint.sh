@@ -48,6 +48,9 @@ else
     ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle --report-json=./phpcs.json --standard=${INPUT_STANDARD} --ignore=${EXCLUDES} --extensions=php ${INPUT_PATHS}
 fi
 
+npx github:10up/phpcs-json-to-md --path ./phpcs.json --output ./phpcs.md
+cat phpcs.md >> $GITHUB_STEP_SUMMARY
+
 status=$?
 
 echo "::remove-matcher owner=phpcs::"
