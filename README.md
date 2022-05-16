@@ -98,7 +98,7 @@ jobs:
             extra_args: '--report-json=./phpcs.json'
         - name: Update summary
           run: |
-            npx github:10up/phpcs-json-to-md --path ./phpcs.json --output ./phpcs.md
+            npx --yes github:10up/phpcs-json-to-md --path ./phpcs.json --output ./phpcs.md
             cat phpcs.md >> $GITHUB_STEP_SUMMARY
           if: always()
 ```
