@@ -15,7 +15,8 @@ elif [ "${INPUT_STANDARD}" = "10up-Default" ]; then
 	git clone https://github.com/PHPCompatibility/PHPCompatibilityWP ${HOME}/phpcompatwp
 	git clone https://github.com/PHPCompatibility/PHPCompatibility ${HOME}/phpcompat
 	git clone https://github.com/PHPCompatibility/PHPCompatibilityParagonie ${HOME}/phpcompat-paragonie
-    ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat"
+	git clone https://github.com/PHPCSStandards/PHPCSUtils ${HOME}/phpcsutils
+    ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils"
 elif [ -z "${INPUT_STANDARD_REPO}" ] || [ "${INPUT_STANDARD_REPO}" = "false" ]; then
     ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths ~/wpcs
 else
