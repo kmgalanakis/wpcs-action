@@ -1,6 +1,6 @@
 # WPCS GitHub Action
 
->  GitHub Action to help you lint your PHP without additional dependencies within your codebase 
+>  GitHub Action to help you lint your PHP without additional dependencies within your codebase.
 
 [![Support Level](https://img.shields.io/badge/support-active-green.svg)](#support-level) [![Release Version](https://img.shields.io/github/release/10up/wpcs-action.svg)](https://github.com/10up/wpcs-action/releases/latest) [![MIT License](https://img.shields.io/github/license/10up/wpcs-action.svg)](https://github.com/10up/wpcs-action/blob/develop/LICENSE)
 
@@ -78,6 +78,7 @@ jobs:
           with:
             standard: 'WordPress-VIP-Go'
 ```
+
 ### Display the linting result in the GitHub Actions summary
 
 ```yaml
