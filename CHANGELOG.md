@@ -53,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `phpcs_bin_path` and `installed_paths` options.
 
 [Unreleased]: https://github.com/10up/wpcs-action/compare/stable...develop
+[1.5.0]: https://github.com/10up/wpcs-action/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/10up/wpcs-action/compare/v1.3.4...v1.4.0
 [1.3.4]: https://github.com/10up/wpcs-action/compare/v1.3.3...v1.3.4
 [1.3.3]: https://github.com/10up/wpcs-action/compare/v1.3.2...v1.3.3
