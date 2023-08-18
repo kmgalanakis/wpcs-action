@@ -107,6 +107,37 @@ jobs:
           if: always()
 ```
 
+### Exclude specific rule(s) from the used ruleset
+
+Create a custom project ruleset by creating file named `phpcs.xml.dist` in the root directory of the project. The contents of the file should be similar to the following:
+
+```xml
+<?xml version="1.0"?>
+<ruleset name="Project Rules">
+	<rule ref="WordPress">
+	<!-- Any of `WordPress|WordPress-Core|WordPress-Docs|WordPress-Extra|WordPress-VIP-Go|WordPressVIPMinimum|10up-Default` -->
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+	</rule>
+</ruleset>
+```
+
+When setting up the workflow for the project, to use the custom project ruleset, the `use_local_config` arguments will need to be set to `true` to instruct the action to use the local project file. The job configuration should be similar to the following:
+
+```yaml
+jobs:
+  phpcs:
+    name: WPCS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: WPCS check
+        uses: 10up/wpcs-action@stable
+        with:
+          standard: 'WordPress' # Standard to use. Accepts WordPress|WordPress-Core|WordPress-Docs|WordPress-Extra|WordPress-VIP-Go|WordPressVIPMinimum|10up-Default.
+          use_local_config: 'true'
+```
+
 ## Support Level
 
 **Active:** 10up is actively working on this, and we expect to continue work for the foreseeable future including keeping tested up to the most recent version of WordPress.  Bug reports, feature requests, questions, and pull requests are welcome.
