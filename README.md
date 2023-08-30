@@ -10,7 +10,7 @@ This action will help you to run phpcs (PHP_CodeSniffer) against [WordPress Codi
 
 To make it as simple as possible, this action supports WordPress Coding Standards exclusively and only checks for PHP files. This action doesn't require any change or addition to your source code. It means that you don't need to add composer/phpcs to your plugin or create PHP CodeSniffer config to use this action.
 
-This is a fork of [chekalsky/phpcs-action](https://github.com/chekalsky/phpcs-action), so this action supports GitHub Action annotations too. All credit goes to 
+This is a fork of [chekalsky/phpcs-action](https://github.com/chekalsky/phpcs-action), so this action supports GitHub Action annotations too. All credit goes to
 [Ilya Chekalsky](https://github.com/chekalsky).
 
 From v1.3.1, this action can detect the PHPCS custom config and use that config to check the source code. When using the local config, `paths`, `excludes`, and `standard` are ignored.
@@ -37,7 +37,7 @@ jobs:
       name: WPCS
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v3
         - name: WPCS check
           uses: 10up/wpcs-action@stable
 ```
@@ -74,7 +74,7 @@ jobs:
       name: VIPCS
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v3
         - name: VIPCS check
           uses: 10up/wpcs-action@stable
           with:
@@ -93,7 +93,7 @@ jobs:
       name: VIPCS
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v3
         - name: VIPCS check
           uses: 10up/wpcs-action@stable
           with:
@@ -130,7 +130,7 @@ jobs:
     name: WPCS
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: WPCS check
         uses: 10up/wpcs-action@stable
         with:
