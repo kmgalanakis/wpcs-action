@@ -4,11 +4,99 @@ cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 
 git clone --depth 1 -b 2.3.0 https://github.com/WordPress/WordPress-Coding-Standards.git ~/wpcs
 
+git config --global --add safe.directory $(pwd)
+
+diff_lines() {
+  path=""
+  line=""
+  while IFS= read -r REPLY; do
+     esc=$(printf '\033')
+     if echo "$REPLY" | grep -qE '\-\-\- (a/)?.*'; then
+         continue
+     elif echo "$REPLY" | grep -qE '\+\+\+ (b/)?([^[:blank:]'"$esc"']+).*'; then
+         path=$(echo "$REPLY" | sed -E 's/\+\+\+ (b\/)?([^[:blank:]'"$esc"']+).*/\2/')
+     elif echo "$REPLY" | grep -qE '@@ -[0-9]+(,[0-9]+)? \+([0-9]+)(,[0-9]+)? @@.*'; then
+         line=$(echo "$REPLY" | sed -E 's/@@ -[0-9]+(,[0-9]+)? \+([0-9]+)(,[0-9]+)? @@.*/\2/')
+     elif echo "$REPLY" | grep -qE '^('"$esc"'\[[0-9;]*m)*([\\ +-])'; then
+         echo "$path:$line:$REPLY"
+         if echo "${REPLY}" | grep -qE '^('"$esc"'\[[0-9;]*m)*([\ +-])'; then
+             line=$((line+1))
+         fi
+     fi
+  done
+}
+
+filter_by_changed_lines() {
+    changedLines="$1"
+    fileName=
+    fileLine=
+    exitCode=0
+
+    while IFS= read -r line; do
+        if echo "$line" | grep -q -E '<file name="(\/github\/workspace\/)?([^"]+)'; then
+            fileName=$(echo "$line" | sed -E 's/.*<file name="(\/github\/workspace\/)?([^"]+).*/\2/')
+            echo "$line"
+        elif echo "$line" | grep -q -E '<error line="([^"]+)'; then
+            fileLine=$(echo "$line" | sed -E 's/.*<error line="([^"]+).*/\1/')
+            if echo "$changedLines" | grep -qx "$fileName:$fileLine"; then
+                exitCode=1
+                echo "$line"
+            fi
+        else
+            echo "$line"
+        fi
+    done
+    exit "$exitCode"
+}
+
+INPUT_ONLY_CHANGED_FILES=${INPUT_ONLY_CHANGED_FILES:-${INPUT_ONLY_CHANGED_LINES:-"false"}}
+
+if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
+    if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+        COMPARE_FROM=origin/${GITHUB_BASE_REF}
+        COMPARE_TO=origin/${GITHUB_HEAD_REF}
+
+        COMPARE_FROM_REF=$(git merge-base "${COMPARE_FROM}" "${COMPARE_TO}")
+        COMPARE_TO_REF=${COMPARE_TO}
+    else
+        COMPARE_FROM="HEAD^"
+        COMPARE_TO="HEAD"
+        COMPARE_FROM_REF="HEAD^"
+        COMPARE_TO_REF="HEAD"
+    fi
+    echo "Will only check changed files (${COMPARE_FROM_REF} -> ${COMPARE_TO_REF})"
+    set +e
+    CHANGED_FILES=$(git diff --name-only --diff-filter=d "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}" | xargs -rt ls -1d 2>/dev/null)
+    set -e
+    echo "Will check files:"
+    echo "${CHANGED_FILES}"
+else
+    echo "Will check all files"
+fi
+
 if [ "${INPUT_STANDARD}" = "WordPress-VIP-Go" ] || [ "${INPUT_STANDARD}" = "WordPressVIPMinimum" ]; then
     echo "Setting up VIPCS"
     git clone --depth 1 -b 2.3.3 https://github.com/Automattic/VIP-Coding-Standards.git ${HOME}/vipcs
     git clone https://github.com/sirbrillig/phpcs-variable-analysis ${HOME}/variable-analysis
-    ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/vipcs,${HOME}/variable-analysis"
+    if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
+        if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
+            step1=$(git diff -U0 --diff-filter=d "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
+            step2=$(echo "${step1}" | diff_lines)
+            step3=$(echo "${step2}" | grep -ve ':-')
+            step4=$(echo "${step3}" | sed 's/:+.*//') # On some platforms, sed needs to have + escaped.  This isn't the case for Alpine sed.
+            step5=$(echo "${step4}" | sed 's/:\\.*//')
+            set +e
+            echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/vipcs,${HOME}/variable-analysis" | filter_by_changed_lines "${step5}"
+            status=$?
+            set -e
+        else
+            echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/vipcs,${HOME}/variable-analysis"
+            status=$?
+        fi
+    else
+        ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/vipcs,${HOME}/variable-analysis"
+        status=$?
+    fi
 elif [ "${INPUT_STANDARD}" = "10up-Default" ]; then
     echo "Setting up 10up-Default"
     git clone https://github.com/10up/phpcs-composer ${HOME}/10up
@@ -18,13 +106,67 @@ elif [ "${INPUT_STANDARD}" = "10up-Default" ]; then
     git clone https://github.com/PHPCSStandards/PHPCSUtils ${HOME}/phpcsutils
     git clone https://github.com/Automattic/VIP-Coding-Standards ${HOME}/vipcs
     git clone https://github.com/sirbrillig/phpcs-variable-analysis ${HOME}/variable-analysis
-    ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils,${HOME}/vipcs,${HOME}/variable-analysis"
+    if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
+        if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
+          step1=$(git diff -U0 --diff-filter=d "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
+          step2=$(echo "${step1}" | diff_lines)
+          step3=$(echo "${step2}" | grep -ve ':-')
+          step4=$(echo "${step3}" | sed 's/:+.*//') # On some platforms, sed needs to have + escaped.  This isn't the case for Alpine sed.
+          step5=$(echo "${step4}" | sed 's/:\\.*//')
+          set +e
+          echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils,${HOME}/vipcs,${HOME}/variable-analysis" | filter_by_changed_lines "${step5}"
+          status=$?
+          set -e
+        else
+          echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils,${HOME}/vipcs,${HOME}/variable-analysis"
+          status=$?
+        fi
+    else
+        ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils,${HOME}/vipcs,${HOME}/variable-analysis"
+        status=$?
+    fi
 elif [ -z "${INPUT_STANDARD_REPO}" ] || [ "${INPUT_STANDARD_REPO}" = "false" ]; then
-    ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths ~/wpcs
+  if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
+      if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
+        step1=$(git diff -U0 --diff-filter=d "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
+        step2=$(echo "${step1}" | diff_lines)
+        step3=$(echo "${step2}" | grep -ve ':-')
+        step4=$(echo "${step3}" | sed 's/:+.*//') # On some platforms, sed needs to have + escaped.  This isn't the case for Alpine sed.
+        step5=$(echo "${step4}" | sed 's/:\\.*//')
+        set +e
+        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths ~/wpcs | filter_by_changed_lines "${step5}"
+        status=$?
+        set -e
+      else
+        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths ~/wpcs
+        status=$?
+      fi
+  else
+      ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths ~/wpcs
+      status=$?
+  fi
 else
     echo "Standard repository: ${INPUT_STANDARD_REPO}"
     git clone -b ${INPUT_REPO_BRANCH} ${INPUT_STANDARD_REPO} ${HOME}/cs
-    ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/cs"
+    if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
+      if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
+        step1=$(git diff -U0 --diff-filter=d "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
+        step2=$(echo "${step1}" | diff_lines)
+        step3=$(echo "${step2}" | grep -ve ':-')
+        step4=$(echo "${step3}" | sed 's/:+.*//') # On some platforms, sed needs to have + escaped.  This isn't the case for Alpine sed.
+        step5=$(echo "${step4}" | sed 's/:\\.*//')
+        set +e
+        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/cs" | filter_by_changed_lines "${step5}"
+        status=$?
+        set -e
+      else
+        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/cs"
+        status=$?
+      fi
+  else
+      ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/cs"
+      status=$?
+  fi
 fi
 
 if [ -z "${INPUT_EXCLUDES}" ]; then
@@ -53,12 +195,46 @@ else
 fi
 
 if [ "${HAS_CONFIG}" = true ] && [ "${INPUT_USE_LOCAL_CONFIG}" = "true" ] ; then
-    ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle ${INPUT_EXTRA_ARGS}
+  if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
+      if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
+        step1=$(git diff -U0 --diff-filter=d "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
+        step2=$(echo "${step1}" | diff_lines)
+        step3=$(echo "${step2}" | grep -ve ':-')
+        step4=$(echo "${step3}" | sed 's/:+.*//') # On some platforms, sed needs to have + escaped.  This isn't the case for Alpine sed.
+        step5=$(echo "${step4}" | sed 's/:\\.*//')
+        set +e
+        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle ${INPUT_EXTRA_ARGS} | filter_by_changed_lines "${step5}"
+        status=$?
+        set -e
+      else
+        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle ${INPUT_EXTRA_ARGS}
+        status=$?
+      fi
+  else
+      ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle ${INPUT_EXTRA_ARGS}
+      status=$?
+  fi
 else
+  if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
+    if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
+      step1=$(git diff -U0 --diff-filter=d "${COMPARE_FROM_REF}" "${COMPARE_TO_REF}")
+      step2=$(echo "${step1}" | diff_lines)
+      step3=$(echo "${step2}" | grep -ve ':-')
+      step4=$(echo "${step3}" | sed 's/:+.*//') # On some platforms, sed needs to have + escaped.  This isn't the case for Alpine sed.
+      step5=$(echo "${step4}" | sed 's/:\\.*//')
+      set +e
+      echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle --standard=${INPUT_STANDARD} --extensions=php ${INPUT_EXTRA_ARGS} | filter_by_changed_lines "${step5}"
+      status=$?
+      set -e
+    else
+      echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle --standard=${INPUT_STANDARD} --extensions=php ${INPUT_EXTRA_ARGS}
+      status=$?
+    fi
+  else
     ${INPUT_PHPCS_BIN_PATH} ${WARNING_FLAG} --report=checkstyle --standard=${INPUT_STANDARD} --ignore=${EXCLUDES} --extensions=php ${INPUT_PATHS} ${INPUT_EXTRA_ARGS}
+    status=$?
+  fi
 fi
-
-status=$?
 
 echo "::remove-matcher owner=phpcs::"
 
