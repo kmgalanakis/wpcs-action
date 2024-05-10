@@ -92,15 +92,12 @@ if [ "${INPUT_STANDARD}" = "WordPress-VIP-Go" ] || [ "${INPUT_STANDARD}" = "Word
         if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
             set +e
             echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/vipcs,${HOME}/variable-analysis" | filter_by_changed_lines "${clean_diff_output}"
-            status=$?
             set -e
         else
             echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/vipcs,${HOME}/variable-analysis"
-            status=$?
         fi
     else
         ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/vipcs,${HOME}/variable-analysis"
-        status=$?
     fi
 elif [ "${INPUT_STANDARD}" = "10up-Default" ]; then
     echo "Setting up 10up-Default"
@@ -115,30 +112,24 @@ elif [ "${INPUT_STANDARD}" = "10up-Default" ]; then
         if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
           set +e
           echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils,${HOME}/vipcs,${HOME}/variable-analysis" | filter_by_changed_lines "${clean_diff_output}"
-          status=$?
           set -e
         else
           echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils,${HOME}/vipcs,${HOME}/variable-analysis"
-          status=$?
         fi
     else
         ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils,${HOME}/vipcs,${HOME}/variable-analysis"
-        status=$?
     fi
 elif [ -z "${INPUT_STANDARD_REPO}" ] || [ "${INPUT_STANDARD_REPO}" = "false" ]; then
   if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
       if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
         set +e
         echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths ~/wpcs | filter_by_changed_lines "${clean_diff_output}"
-        status=$?
         set -e
       else
         echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths ~/wpcs
-        status=$?
       fi
   else
       ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths ~/wpcs
-      status=$?
   fi
 else
     echo "Standard repository: ${INPUT_STANDARD_REPO}"
@@ -147,15 +138,12 @@ else
       if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
         set +e
         echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/cs" | filter_by_changed_lines "${clean_diff_output}"
-        status=$?
         set -e
       else
         echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/cs"
-        status=$?
       fi
   else
       ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/cs"
-      status=$?
   fi
 fi
 
