@@ -59,6 +59,22 @@ clean_diff_output() {
   echo "${step5}"
 }
 
+decide_all_files_or_changed() {
+  standards="$1"
+
+  if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
+      if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
+        set +e
+        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${standards}" | filter_by_changed_lines "${clean_diff_output}"
+        set -e
+      else
+        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${standards}"
+      fi
+  else
+      ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${standards}"
+  fi
+}
+
 INPUT_ONLY_CHANGED_FILES=${INPUT_ONLY_CHANGED_FILES:-${INPUT_ONLY_CHANGED_LINES:-"false"}}
 
 if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
@@ -88,17 +104,8 @@ if [ "${INPUT_STANDARD}" = "WordPress-VIP-Go" ] || [ "${INPUT_STANDARD}" = "Word
     echo "Setting up VIPCS"
     git clone --depth 1 -b 2.3.3 https://github.com/Automattic/VIP-Coding-Standards.git ${HOME}/vipcs
     git clone https://github.com/sirbrillig/phpcs-variable-analysis ${HOME}/variable-analysis
-    if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
-        if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
-            set +e
-            echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/vipcs,${HOME}/variable-analysis" | filter_by_changed_lines "${clean_diff_output}"
-            set -e
-        else
-            echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/vipcs,${HOME}/variable-analysis"
-        fi
-    else
-        ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/vipcs,${HOME}/variable-analysis"
-    fi
+
+    decide_all_files_or_changed "${HOME}/wpcs,${HOME}/vipcs,${HOME}/variable-analysis"
 elif [ "${INPUT_STANDARD}" = "10up-Default" ]; then
     echo "Setting up 10up-Default"
     git clone https://github.com/10up/phpcs-composer ${HOME}/10up
@@ -108,43 +115,15 @@ elif [ "${INPUT_STANDARD}" = "10up-Default" ]; then
     git clone https://github.com/PHPCSStandards/PHPCSUtils ${HOME}/phpcsutils
     git clone https://github.com/Automattic/VIP-Coding-Standards ${HOME}/vipcs
     git clone https://github.com/sirbrillig/phpcs-variable-analysis ${HOME}/variable-analysis
-    if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
-        if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
-          set +e
-          echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils,${HOME}/vipcs,${HOME}/variable-analysis" | filter_by_changed_lines "${clean_diff_output}"
-          set -e
-        else
-          echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils,${HOME}/vipcs,${HOME}/variable-analysis"
-        fi
-    else
-        ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils,${HOME}/vipcs,${HOME}/variable-analysis"
-    fi
+
+    decide_all_files_or_changed "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils,${HOME}/vipcs,${HOME}/variable-analysis"
 elif [ -z "${INPUT_STANDARD_REPO}" ] || [ "${INPUT_STANDARD_REPO}" = "false" ]; then
-  if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
-      if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
-        set +e
-        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths ~/wpcs | filter_by_changed_lines "${clean_diff_output}"
-        set -e
-      else
-        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths ~/wpcs
-      fi
-  else
-      ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths ~/wpcs
-  fi
+  decide_all_files_or_changed "~/wpcs"
 else
-    echo "Standard repository: ${INPUT_STANDARD_REPO}"
-    git clone -b ${INPUT_REPO_BRANCH} ${INPUT_STANDARD_REPO} ${HOME}/cs
-    if [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
-      if [ "${INPUT_ONLY_CHANGED_LINES}" = "true" ]; then
-        set +e
-        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/cs" | filter_by_changed_lines "${clean_diff_output}"
-        set -e
-      else
-        echo "${CHANGED_FILES}" | xargs -rt ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/cs"
-      fi
-  else
-      ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/cs"
-  fi
+  echo "Standard repository: ${INPUT_STANDARD_REPO}"
+  git clone -b ${INPUT_REPO_BRANCH} ${INPUT_STANDARD_REPO} ${HOME}/cs
+
+  decide_all_files_or_changed "${HOME}/wpcs,${HOME}/cs"
 fi
 
 if [ -z "${INPUT_EXCLUDES}" ]; then
