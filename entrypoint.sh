@@ -112,7 +112,7 @@ elif [ "${INPUT_STANDARD}" = "10up-Default" ]; then
     git clone https://github.com/PHPCompatibility/PHPCompatibilityWP ${HOME}/phpcompatwp
     git clone https://github.com/PHPCompatibility/PHPCompatibility ${HOME}/phpcompat
     git clone https://github.com/PHPCompatibility/PHPCompatibilityParagonie ${HOME}/phpcompat-paragonie
-    git clone https://github.com/PHPCSStandards/PHPCSUtils ${HOME}/phpcsutils
+    git clone --depth 1 --branch 1.0.11 https://github.com/PHPCSStandards/PHPCSUtils ${HOME}/phpcsutils
     git clone https://github.com/Automattic/VIP-Coding-Standards ${HOME}/vipcs
     git clone https://github.com/sirbrillig/phpcs-variable-analysis ${HOME}/variable-analysis
 
