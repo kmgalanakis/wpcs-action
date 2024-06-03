@@ -11,7 +11,7 @@ jobs:
           with:
             fetch-depth: 0
         - name: WPCS Check
-          uses: 10up/wpcs-action
+          uses: 10up/wpcs-action@stable
           with:
             enable_warnings: true
             standard: 10up-Default
