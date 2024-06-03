@@ -11,7 +11,7 @@ jobs:
           with:
             fetch-depth: 0
         - name: WPCS Check
-          uses: 10up/wpcs-action@develop
+          uses: 10up/wpcs-action@fix/wordpress-standard
           with:
             enable_warnings: true
             standard: WordPress
